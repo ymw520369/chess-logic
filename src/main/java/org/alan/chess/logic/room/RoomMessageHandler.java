@@ -68,7 +68,6 @@ public class RoomMessageHandler {
             }
         }
         MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
-
     }
 
     @Command(1103)
@@ -87,5 +86,13 @@ public class RoomMessageHandler {
         MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
     }
 
+    @Command(1104)
+    public void quickMatch(PlayerController playerController, ReqCreateRoom reqCreateRoom) {
+        log.info("收到玩家快速匹配请求，roleUid={},session={}", playerController.player.role.roleUid);
+        int roomType = reqCreateRoom.roomType;
+        RoomController roomController = roomManager.create(roomType, playerController);
+        MatchInfo matchInfo = matchManager.addMatch(roomController);
+        roomController.broadcast(new RespBeginMatch(matchInfo.beginTime));
+    }
 
 }

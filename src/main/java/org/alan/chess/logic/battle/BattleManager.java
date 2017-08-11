@@ -38,7 +38,7 @@ public class BattleManager implements BattleListener {
     private BattleController create(Battle battle, Set<MatchInfo> matchInfos) {
         BattleController battleController = new BattleController(battleMessageHelper, uidCreator.incrementAndGet(),
                 battle, matchInfos).timerCenter(timerCenter).battleListener(this);
-        battles.put(battleController.getUid(), battleController);
+        battles.put(battleController.uid, battleController);
         return battleController;
     }
 
@@ -53,6 +53,6 @@ public class BattleManager implements BattleListener {
 
     @Override
     public void destroy(BattleController battleController) {
-        battles.remove(battleController.getUid());
+        battles.remove(battleController.uid);
     }
 }

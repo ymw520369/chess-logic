@@ -5,6 +5,7 @@
 
 package org.alan.chess.logic.battle;
 
+import org.alan.chess.logic.battle.BattleMessage.MoveChess;
 import org.alan.chess.logic.match.MatchInfo;
 import org.alan.chess.logic.scene.SceneController;
 import org.alan.mars.timer.TimerCenter;
@@ -14,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -32,10 +33,10 @@ public class BattleController extends SceneController<Battle> implements TimerLi
     private int seed;
     private List<PlayerFighter> fighters;
     private BattleMessageHelper battleMessageHelper;
-    private List<GameInput> inputs = new LinkedList<>();
     private Lock inputLock = new ReentrantLock();
     private TimerCenter timerCenter;
     private BattleListener battleListener;
+    private Map<Integer, SpriteController> sprites;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -44,6 +45,10 @@ public class BattleController extends SceneController<Battle> implements TimerLi
         fighters = new ArrayList<>();
         this.battleMessageHelper = battleMessageHelper;
         matchInfos.forEach(e -> fighters.addAll(e.roomController.getFighters()));
+    }
+
+    public void initSprite() {
+
     }
 
     public BattleController timerCenter(TimerCenter timerCenter) {
@@ -83,11 +88,11 @@ public class BattleController extends SceneController<Battle> implements TimerLi
 
     public void start() {
         battleMessageHelper.sendGameStart(this);
-        timerCenter.add(new TimerEvent(this, "FIXED_UPDATE", 100));
-        timerCenter.add(new TimerEvent(this, "END", 0, 1, 3).withTimeUnit(TimeUnit.MINUTES));
+        timerCenter.add(new TimerEvent<>(this, "FIXED_UPDATE", 100));
+        timerCenter.add(new TimerEvent<>(this, "END", 0, 1, 3).withTimeUnit(TimeUnit.MINUTES));
     }
 
-    public void input(long roleUid, GameInput gameInput) {
+    public void move(long roleUid, MoveChess moveChess) {
         try {
             inputLock.lock();
             //inputs.add(GameInput.newBuilder(gameInput).setRoleUid(roleUid).build());
@@ -99,8 +104,7 @@ public class BattleController extends SceneController<Battle> implements TimerLi
     public void update() {
         try {
             inputLock.lock();
-            battleMessageHelper.broadcastGameInput(this, lfs++, inputs);
-            inputs.clear();
+            //battleMessageHelper.broadcastGameInput(this, lfs++, inputs);
         } finally {
             inputLock.unlock();
         }
@@ -110,7 +114,6 @@ public class BattleController extends SceneController<Battle> implements TimerLi
         fighters.forEach(e -> e.getPlayerController().player.sceneId = 0);
         timerCenter.remove(this);
         fighters.clear();
-        inputs.clear();
         battleListener.destroy(this);
     }
 

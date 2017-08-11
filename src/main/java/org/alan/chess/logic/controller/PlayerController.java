@@ -13,6 +13,18 @@ public class PlayerController {
     public PFSession session;
     public Player player;
 
+    public long playerId() {
+        return player.role.roleUid;
+    }
+
+    public String playerName() {
+        return player.role.name;
+    }
+
+    public int sceneId() {
+        return player.sceneId;
+    }
+
     public void sendToClient(Object msg) {
     }
 }
