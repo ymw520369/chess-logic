@@ -3,6 +3,7 @@ package org.alan.chess.logic.manager;
 import org.alan.chess.logic.bean.Player;
 import org.alan.chess.logic.bean.Role;
 import org.alan.chess.logic.bean.UserInfo;
+import org.alan.chess.logic.controller.PlayerController;
 import org.alan.mars.protostuff.PFSession;
 import org.alan.mars.protostuff.ResponseMessage;
 
@@ -23,10 +24,10 @@ public class LogicManager {
     }
 
     public void EnterGame(PFSession session, Role role, UserInfo userInfo) {
-        Player player = new Player<PFSession>();
+        Player player = new Player();
         player.role = role;
         player.userInfo = userInfo;
-        player.session = session;
+        PlayerController playerController = new PlayerController(session, player);
         session.setReference(player);
         session.send(new EnterGame(role));
     }

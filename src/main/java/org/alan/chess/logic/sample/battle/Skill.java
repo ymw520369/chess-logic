@@ -1,16 +1,16 @@
 
  package org.alan.chess.logic.sample.battle;
 
- import org.alan.chess.logic.core.Sample;
- import org.alan.chess.logic.core.SampleFactory;
- import org.alan.chess.logic.core.SampleFactoryImpl;
+ import org.alan.mars.sample.Sample;
+ import org.alan.mars.sample.SampleFactory;
+ import org.alan.mars.sample.impl.SampleFactoryImpl;
  import com.dyuproject.protostuff.Tag;
  import java.util.*;
 
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-11 18:37:23
+ * @Date 2017-08-14 00:25:41
  */
  public class Skill extends Sample{
     public static SampleFactory<Skill> factory = new SampleFactoryImpl<>();

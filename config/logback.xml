@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration added to prevent logback default of DEBUG output -->
+<configuration>
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+	<property name="LOG_HOME" value="./log" /> 
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%4d{yyyy-MM-dd HH:mm:ss.fff} [%thread] %-5p - %c - %m%n</pattern>
+		</encoder>
+	</appender>
+	<!-- ch.qos.logback.core.rolling.RollingFileAppender 文件日志输出 -->
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_HOME}/miner-center.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/miner-center-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+			<MaxHistory>20</MaxHistory>
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<MaxFileSize>5MB</MaxFileSize>
+			</TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%4d{yyyy-MM-dd HH:mm:ss} [%thread] %-5p - %c - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com" level="debug" />
+
+	<root level="info">
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
+	</root>
+</configuration>

@@ -13,6 +13,11 @@ public class PlayerController {
     public PFSession session;
     public Player player;
 
+    public PlayerController(PFSession session, Player player) {
+        this.session = session;
+        this.player = player;
+    }
+
     public long playerId() {
         return player.role.roleUid;
     }
@@ -23,6 +28,10 @@ public class PlayerController {
 
     public int sceneId() {
         return player.sceneId;
+    }
+
+    public void setSceneId(int sceneId) {
+        player.sceneId = sceneId;
     }
 
     public void sendToClient(Object msg) {

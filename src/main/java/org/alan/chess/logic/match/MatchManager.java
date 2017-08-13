@@ -5,9 +5,9 @@
 
 package org.alan.chess.logic.match;
 
-import org.alan.chess.logic.battle.Battle;
 import org.alan.chess.logic.battle.BattleManager;
 import org.alan.chess.logic.room.RoomController;
+import org.alan.chess.logic.sample.battle.Battle;
 import org.alan.chess.logic.sample.room.Room;
 import org.alan.mars.timer.TimerCenter;
 import org.alan.mars.timer.TimerEvent;
@@ -94,32 +94,32 @@ public class MatchManager implements TimerListener, CommandLineRunner {
                 if (matchingQueue == null || matchingQueue.isEmpty()) {
                     continue;
                 }
-                MatchInfo PlayerMatchInfo = matchingQueue.poll();
-                Set<MatchInfo> PlayerMatchInfos = new HashSet<>();
-                PlayerMatchInfos.add(PlayerMatchInfo);
-                if (PlayerMatchInfo != null && !matchingQueue.isEmpty()) {
+                MatchInfo matchInfo = matchingQueue.poll();
+                Set<MatchInfo> matchInfos = new HashSet<>();
+                matchInfos.add(matchInfo);
+                if (matchInfo != null && !matchingQueue.isEmpty()) {
                     Iterator<MatchInfo> iter = matchingQueue.iterator();
                     while (iter.hasNext()) {
                         MatchInfo PlayerMatchInfo1 = iter.next();
-                        if (PlayerMatchInfo.match(PlayerMatchInfo1)) {
+                        if (matchInfo.match(PlayerMatchInfo1)) {
                             iter.remove();
-                            PlayerMatchInfos.add(PlayerMatchInfo1);
+                            matchInfos.add(PlayerMatchInfo1);
                         }
-                        if (PlayerMatchInfos.size() == MATCH_SIZE) {
+                        if (matchInfos.size() == MATCH_SIZE) {
                             break;
                         }
                     }
                 }
-                if (PlayerMatchInfos.size() < MATCH_SIZE) {
-                    PlayerMatchInfos.forEach(e -> matchingQueue.offer(e));
+                if (matchInfos.size() < MATCH_SIZE) {
+                    matchInfos.forEach(e -> matchingQueue.offer(e));
                 } else {
-                    matchSussessful(entry.getKey(), PlayerMatchInfos);
+                    matchSussessful(entry.getKey(), matchInfos);
                 }
             }
         }
     }
 
     private void matchSussessful(Room room, Set<MatchInfo> matchInfos) {
-        battleManager.startBattle(Battle.factory.getSample(room.getBattleSid()), matchInfos);
+        battleManager.startBattle(Battle.newBattle(room.getBattleSid()), matchInfos);
     }
 }

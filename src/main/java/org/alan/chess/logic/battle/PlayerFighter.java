@@ -14,27 +14,15 @@ import org.alan.chess.logic.controller.PlayerController;
  * @since 1.0
  */
 public class PlayerFighter {
-    private PlayerController playerController;
-    private boolean initDone;
+    public long playerId;
+    public String playerName;
+    public transient PlayerController playerController;
+    public transient boolean initDone;
 
     public PlayerFighter(PlayerController playerController) {
         this.playerController = playerController;
-    }
-
-    public long getUid() {
-        return playerController.player.role.roleUid;
-    }
-
-    public String getName() {
-        return playerController.player.role.name;
-    }
-
-    public boolean isInitDone() {
-        return initDone;
-    }
-
-    public void setInitDone(boolean initDone) {
-        this.initDone = initDone;
+        this.playerId = playerController.playerId();
+        this.playerName = playerController.playerName();
     }
 
     public void send(Object msg) {

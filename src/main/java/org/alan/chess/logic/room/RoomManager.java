@@ -30,7 +30,7 @@ public class RoomManager implements PlayerExitListener {
     public RoomController create(int roomType, PlayerController playerController) {
 //        Room room = Room.factory.getSample(sid);
         RoomController roomController = new RoomController(room, uidCreator.incrementAndGet(), playerController);
-        rooms.put(roomController.getUid(), roomController);
+        rooms.put(roomController.uid, roomController);
         return roomController;
     }
 

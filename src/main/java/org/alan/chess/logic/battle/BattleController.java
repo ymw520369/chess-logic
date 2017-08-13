@@ -6,7 +6,11 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.battle.BattleMessage.MoveChess;
+import org.alan.chess.logic.battle.sprite.SpriteController;
+import org.alan.chess.logic.battle.sprite.SpriteManager;
 import org.alan.chess.logic.match.MatchInfo;
+import org.alan.chess.logic.sample.battle.Battle;
+import org.alan.chess.logic.sample.battle.CardSprite;
 import org.alan.chess.logic.scene.SceneController;
 import org.alan.mars.timer.TimerCenter;
 import org.alan.mars.timer.TimerEvent;
@@ -14,10 +18,7 @@ import org.alan.mars.timer.TimerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,26 +30,22 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 1.0
  */
 public class BattleController extends SceneController<Battle> implements TimerListener {
-    private int lfs = 1;
-    private int seed;
-    private List<PlayerFighter> fighters;
-    private BattleMessageHelper battleMessageHelper;
-    private Lock inputLock = new ReentrantLock();
-    private TimerCenter timerCenter;
-    private BattleListener battleListener;
-    private Map<Integer, SpriteController> sprites;
+    public int currentPlayerId;
+    public int currentTeamId;
+    public int roundNum;
+    public Map<Long, PlayerFighter> fighters;
+    public Map<Integer, PlayerFighter> teamFighters;
+    public Lock inputLock = new ReentrantLock();
+    public TimerCenter timerCenter;
+    public BattleListener battleListener;
+    public SpriteController[][] pointSprites;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    protected BattleController(BattleMessageHelper battleMessageHelper, int uid, Battle battle, Set<MatchInfo> matchInfos) {
-        super(uid, battle, System.currentTimeMillis());
-        fighters = new ArrayList<>();
-        this.battleMessageHelper = battleMessageHelper;
-        matchInfos.forEach(e -> fighters.addAll(e.roomController.getFighters()));
-    }
-
-    public void initSprite() {
-
+    protected BattleController(int uid, Battle battle, Set<MatchInfo> matchInfos) {
+        super(uid, battle);
+        fighters = new HashMap<>();
+        matchInfos.forEach(e -> fighters.putAll(e.roomController.getFighters()));
     }
 
     public BattleController timerCenter(TimerCenter timerCenter) {
@@ -61,64 +58,56 @@ public class BattleController extends SceneController<Battle> implements TimerLi
         return this;
     }
 
-    public List<PlayerFighter> getFighters() {
-        return fighters;
+    public void initSprite() {
+        pointSprites = new SpriteController[source.row][source.cell];
+        Collection<CardSprite> sprites = CardSprite.factory.getAllSamples();
+        sprites.forEach(sprite -> {
+            SpriteController spriteController = SpriteManager.create(sprite);
+            pointSprites[sprite.x][sprite.z] = spriteController;
+        });
     }
 
     public void init() {
-        seed = (int) (Math.random() * Integer.MAX_VALUE);
-        fighters.forEach(e -> e.getPlayerController().player.sceneId = uid);
-        battleMessageHelper.sendGameInit(this, seed);
-
+        //初始化战斗元素
+        initSprite();
+        //发送初始化消息
+        BattleMessage.sendGameInit(this);
     }
 
     public void initDone(long roleUid) {
-        boolean allDone = true;
-        for (PlayerFighter e : fighters) {
-            if (e.getUid() == roleUid) {
-                e.setInitDone(true);
-            }
-            allDone = allDone && e.isInitDone();
+        PlayerFighter playerFighter = fighters.get(roleUid);
+        if (playerFighter != null) {
+            playerFighter.initDone = true;
         }
-
+        boolean allDone = fighters.values().stream().allMatch(f -> f.initDone);
         if (allDone) {
             start();
         }
     }
 
     public void start() {
-        battleMessageHelper.sendGameStart(this);
+        BattleMessage.sendCurrentGoInfo(this, true);
         timerCenter.add(new TimerEvent<>(this, "FIXED_UPDATE", 100));
         timerCenter.add(new TimerEvent<>(this, "END", 0, 1, 3).withTimeUnit(TimeUnit.MINUTES));
     }
 
+
     public void move(long roleUid, MoveChess moveChess) {
-        try {
-            inputLock.lock();
-            //inputs.add(GameInput.newBuilder(gameInput).setRoleUid(roleUid).build());
-        } finally {
-            inputLock.unlock();
-        }
+
     }
 
     public void update() {
-        try {
-            inputLock.lock();
-            //battleMessageHelper.broadcastGameInput(this, lfs++, inputs);
-        } finally {
-            inputLock.unlock();
-        }
+
+    }
+
+    public void nextRound() {
+
     }
 
     public void destroy() {
-        fighters.forEach(e -> e.getPlayerController().player.sceneId = 0);
         timerCenter.remove(this);
         fighters.clear();
         battleListener.destroy(this);
-    }
-
-    public void broadcast(Object msg) {
-        fighters.forEach(e -> e.send(msg));
     }
 
     @Override

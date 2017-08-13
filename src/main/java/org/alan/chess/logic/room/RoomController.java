@@ -13,7 +13,9 @@ import org.alan.chess.logic.sample.room.Room;
 import org.alan.chess.logic.scene.SceneController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2017/4/24.
@@ -27,7 +29,7 @@ public class RoomController extends SceneController<Room> {
     public int roomStatus;
 
     RoomController(Room room, int uid, PlayerController playerController) {
-        super(uid, room, System.currentTimeMillis());
+        super(uid, room);
         roomSits = new RoomSit[room.getNum()];
         roomSits[0] = new RoomSit(0, playerController);
         for (int i = 1; i < roomSits.length; i++) {
@@ -36,11 +38,11 @@ public class RoomController extends SceneController<Room> {
         ownerSit = 0;
     }
 
-    public List<PlayerFighter> getFighters() {
-        List<PlayerFighter> fighters = new ArrayList<>();
+    public Map<Long, PlayerFighter> getFighters() {
+        Map<Long, PlayerFighter> fighters = new HashMap<>();
         for (RoomSit sit : roomSits) {
             if (sit.playerController != null) {
-                fighters.add(new PlayerFighter(sit.playerController));
+                fighters.put(sit.playerController.playerId(), new PlayerFighter(sit.playerController));
             }
         }
         return fighters;

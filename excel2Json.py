@@ -51,13 +51,13 @@ def readWb2Json(filename: string):
     # 获取文件表格数量
     sh = bk.sheet_by_index(0)
     n = sh.nrows
-    if n < 2:
+    if n < 5:
         print("表格行数不足，nrows = %s,filename = %s" % (n, sh.name))
-        return
-    keys = sh.row(0)
+        return []
+    keys = sh.row(2)
     cellLen = len(keys)
     values = []
-    for rownum in range(1, n):
+    for rownum in range(4, n):
         data = {}
         for cellnum in range(cellLen):
             key = str(keys[cellnum].value)
@@ -74,13 +74,15 @@ def readWb2Json(filename: string):
                 value = date.strftime('%Y/%d/%m %H:%M:%S')
             elif ctype == 4:
                 value = True if cell == 1 else False
-            ov = data[key]
-            if ov is None:
-                data[key] = value
-            elif isinstance(ov,list):
-                ov.append(value)
+            # ov = data[key]
+            if key in data:
+                ov = data[key]
+                if isinstance(ov, list):
+                    ov.append(value)
+                else:
+                    data[key] = [ov, value]
             else:
-                data[key]=[ov,value]
+                data[key] = value
         values.append(data)
     return values
 

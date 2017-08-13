@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "sample.samplePackage",
+      "type": "java.lang.String",
+      "description": "Description for sample.samplePackage."
+  }
+] }

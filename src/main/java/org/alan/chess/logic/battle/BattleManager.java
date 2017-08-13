@@ -6,6 +6,7 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.match.MatchInfo;
+import org.alan.chess.logic.sample.battle.Battle;
 import org.alan.mars.timer.TimerCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,17 +27,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BattleManager implements BattleListener {
     private Map<Integer, BattleController> battles = new HashMap<>();
     private AtomicInteger uidCreator = new AtomicInteger();
-    private BattleMessageHelper battleMessageHelper;
     @Autowired
     private TimerCenter timerCenter;
 
-    @Bean
-    private BattleMessageHelper createHelper() {
-        return battleMessageHelper = new BattleMessageHelper();
-    }
-
     private BattleController create(Battle battle, Set<MatchInfo> matchInfos) {
-        BattleController battleController = new BattleController(battleMessageHelper, uidCreator.incrementAndGet(),
+        BattleController battleController = new BattleController(uidCreator.incrementAndGet(),
                 battle, matchInfos).timerCenter(timerCenter).battleListener(this);
         battles.put(battleController.uid, battleController);
         return battleController;

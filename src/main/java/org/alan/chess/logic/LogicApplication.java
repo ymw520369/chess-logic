@@ -26,7 +26,7 @@ import org.springframework.core.annotation.Order;
  */
 @SpringBootApplication
 @ComponentScan("org.alan")
-@Order(value = 1)
+@Order(value = 999)
 public class LogicApplication implements CommandLineRunner {
     /**
      * 节点配置信息
@@ -89,10 +89,5 @@ public class LogicApplication implements CommandLineRunner {
     @Bean
     public UidCacheManager createUidCacheManager() {
         return new UidCacheManager(clusterSystem, true);
-    }
-
-    @Bean
-    public SessionMessageHandler createSessionMessageHandler() {
-        return new SessionMessageHandler();
     }
 }
