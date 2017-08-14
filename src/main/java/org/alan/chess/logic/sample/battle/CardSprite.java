@@ -10,7 +10,7 @@
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-14 00:25:41
+ * @Date 2017-08-15 01:12:35
  */
  public class CardSprite extends Sample{
     public static SampleFactory<CardSprite> factory = new SampleFactoryImpl<>();
@@ -39,5 +39,8 @@
 	@Tag(8)
 	// 角色贴图
 	public String texture;
+	@Tag(9)
+	// 移动消耗的行动力
+	public int needSp;
 
  }

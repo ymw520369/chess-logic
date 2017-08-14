@@ -28,7 +28,7 @@ public class LogicManager {
         player.role = role;
         player.userInfo = userInfo;
         PlayerController playerController = new PlayerController(session, player);
-        session.setReference(player);
+        session.setReference(playerController);
         session.send(new EnterGame(role));
     }
 }

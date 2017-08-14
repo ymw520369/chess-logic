@@ -10,7 +10,7 @@
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-14 00:25:41
+ * @Date 2017-08-15 01:12:35
  */
  public class Skill extends Sample{
     public static SampleFactory<Skill> factory = new SampleFactoryImpl<>();

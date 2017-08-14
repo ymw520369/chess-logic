@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created on 2017/4/25.
@@ -31,25 +29,38 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 1.0
  */
 public class BattleController extends SceneController<Battle> implements TimerListener {
-    public int currentPlayerId;
-    public int currentTeamId;
-    public int roundNum;
+    public final static int UNINIT_TEAMID = -1;
+
+    //////////////////////////下面为实例变量//////////////////////////
+    /* 定时器*/
+    TimerCenter timerCenter;
+    /* 战斗监听器*/
+    BattleListener battleListener;
+
+    /* 当前出手玩家*/
+    public long currentPlayerId;
+    /* 当前出手队伍*/
+    public int currentTeamId = UNINIT_TEAMID;
+    /* 当前回合数*/
+    public int roundNum = 1;
+    /* 本局游戏队伍信息*/
     public TeamInfo[] teamInfos;
-    public Lock inputLock = new ReentrantLock();
-    public TimerCenter timerCenter;
-    public BattleListener battleListener;
+    /* 游戏对象*/
     public SpriteController[][] pointSprites;
+    /* 玩家出手倒计时*/
+    private TimerEvent countdownEvent;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
     protected BattleController(int uid, Battle battle, Set<MatchInfo> matchInfos) {
         super(uid, battle);
-        teamInfos = new TeamInfo[matchInfos.size()];
-        int i = 0;
+        int len = matchInfos.size();
+        teamInfos = new TeamInfo[len];
+        int i = (int) (Math.random() * len);
         //初始化队伍
         for (MatchInfo matchInfo : matchInfos) {
             TeamInfo teamInfo = matchInfo.getTeamInfo();
-            teamInfo.teamId = i++;
+            teamInfo.teamId = (++i) % len;
             teamInfos[teamInfo.teamId] = teamInfo;
         }
     }
@@ -93,11 +104,13 @@ public class BattleController extends SceneController<Battle> implements TimerLi
     }
 
     public void start() {
-        BattleMessage.sendCurrentGoInfo(this, true);
-        timerCenter.add(new TimerEvent<>(this, "FIXED_UPDATE", 100));
+        nextTeam();
         timerCenter.add(new TimerEvent<>(this, "END", 0, 1, 3).withTimeUnit(TimeUnit.MINUTES));
     }
 
+    public void stop() {
+        destroy();
+    }
 
     public void move(long roleUid, MoveChess moveChess) {
         BattlePoint point = moveChess.fromPoint;
@@ -109,23 +122,45 @@ public class BattleController extends SceneController<Battle> implements TimerLi
             //移动成功广播消息
             if (result) {
                 BattleMessage.sendMove(this, roleUid, moveChess);
-                nextRound();
+                nextTeam();
             }
         }
     }
 
-    public void update() {
-
+    public void nextTeam() {
+        if (countdownEvent != null) {
+            countdownEvent.setEnabled(false);
+        }
+        boolean newRound = false;
+        //如果当前出手队伍是最后一个队伍或者还未进行初始化，则开始新的一回合
+        if (currentTeamId == UNINIT_TEAMID || currentTeamId == teamInfos.length - 1) {
+            nextRound();
+            newRound = true;
+        } else {
+            currentTeamId++;
+        }
+        currentPlayerId = teamInfos[currentTeamId].fighters[0].playerId;
+        BattleMessage.sendCurrentGoInfo(this, newRound);
+        //服务器开始计时
+        countdownEvent = new TimerEvent<>(this, source.countdownSecond, "COUNTDOWN")
+                .withTimeUnit(TimeUnit.SECONDS);
+        timerCenter.add(countdownEvent);
     }
 
     public void nextRound() {
-
+        roundNum++;
+        //如果回合数达到最大回合数，强制结束本局战斗
+        if (roundNum >= source.maxRoundNum) {
+            stop();
+            return;
+        }
+        currentTeamId = 0;
     }
 
     public PlayerFighter getFighter(long playerId) {
         for (TeamInfo teamInfo : teamInfos) {
-            PlayerFighter playerFighter = teamInfo.fighters.get(playerId);
-            if (playerFighter != null) {
+            PlayerFighter playerFighter = teamInfo.fighters[0];
+            if (playerFighter.playerId == playerId) {
                 return playerFighter;
             }
         }
@@ -139,11 +174,8 @@ public class BattleController extends SceneController<Battle> implements TimerLi
 
     @Override
     public void onTimer(TimerEvent e) {
-        if (e.getParameter().equals("END")) {
-            log.debug("战斗结束，uid=" + uid);
-            destroy();
-        } else {
-            update();
+        if (e == countdownEvent) {
+            nextTeam();
         }
     }
 }

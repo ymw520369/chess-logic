@@ -34,12 +34,10 @@ public class MatchInfo {
         return teamInfo;
     }
 
-    private Map<Long, PlayerFighter> getFighters() {
-        Map<Long, PlayerFighter> fighters = new HashMap<>();
-        for (RoomSit sit : roomSits) {
-            if (sit.playerController != null) {
-                fighters.put(sit.playerController.playerId(), new PlayerFighter(sit.playerController));
-            }
+    private PlayerFighter[] getFighters() {
+        PlayerFighter[] fighters = new PlayerFighter[roomSits.length];
+        for (int i = 0; i < fighters.length; i++) {
+            fighters[i] = new PlayerFighter(roomSits[i].playerController);
         }
         return fighters;
     }

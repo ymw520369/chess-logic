@@ -40,6 +40,7 @@ public interface BattleMessage {
 
     @ResponseMessage(messageType = 1200, cmd = 6)
     class RespCurrentGoInfo {
+        public int countdownSecond;
         public int roundNum;
         public boolean newRound;
         public int currentTeamId;
@@ -71,6 +72,7 @@ public interface BattleMessage {
         currentGoInfo.playerId = battleController.currentPlayerId;
         currentGoInfo.roundNum = battleController.roundNum;
         currentGoInfo.newRound = newRound;
+        currentGoInfo.countdownSecond = battleController.source.countdownSecond;
         battleController.broadcast(currentGoInfo);
     }
 

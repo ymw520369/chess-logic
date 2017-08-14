@@ -10,7 +10,7 @@
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-14 00:25:41
+ * @Date 2017-08-15 01:12:35
  */
  public class Battle extends Sample{
     public static SampleFactory<Battle> factory = new SampleFactoryImpl<>();
@@ -36,5 +36,14 @@
 	@Tag(7)
 	// 棋盘列数
 	public int cell;
+	@Tag(8)
+	// 每次出手倒计时时间(秒)
+	public int countdownSecond;
+	@Tag(9)
+	// 每一局上限回合数
+	public int maxRoundNum;
+	@Tag(10)
+	// 每回合的行动力
+	public int roundSp;
 
  }
