@@ -1,7 +1,6 @@
 package org.alan.chess.logic.battle.sprite;
 
 import org.alan.chess.logic.battle.BattlePoint;
-import org.alan.chess.logic.sample.battle.CardSprite;
 
 /**
  * author Alan
@@ -12,12 +11,7 @@ import org.alan.chess.logic.sample.battle.CardSprite;
 public class MaController extends SpriteController {
 
     @Override
-    public boolean canMove(BattlePoint point) {
+    public boolean moveTo(BattlePoint point) {
         return false;
-    }
-
-    @Override
-    public void moveTo(BattlePoint point) {
-
     }
 }

@@ -1,12 +1,13 @@
 package org.alan.chess.logic.battle;
 
+import org.alan.chess.logic.battle.sprite.SpriteController;
+import org.alan.chess.logic.match.TeamInfo;
 import org.alan.chess.logic.sample.battle.CardSprite;
 import org.alan.mars.protostuff.RequestMessage;
 import org.alan.mars.protostuff.ResponseMessage;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2017/8/11.
@@ -24,16 +25,17 @@ public interface BattleMessage {
 
     @ResponseMessage(messageType = 1200, cmd = 2)
     class RespMoveChess {
-        public int roleUid;
+        public long roleUid;
         public MoveChess moveChess;
     }
 
     @ResponseMessage(messageType = 1200, cmd = 4)
     class RespGameInit {
+        public int currentTeamId;
         public int mapId;
         public int battleSid;
         public Collection<CardSprite> allSprite;
-        public Collection<PlayerFighter> fighters;
+        public TeamInfo[] teamInfos;
     }
 
     @ResponseMessage(messageType = 1200, cmd = 6)
@@ -46,10 +48,20 @@ public interface BattleMessage {
 
     static void sendGameInit(BattleController battleController) {
         RespGameInit respGameInit = new RespGameInit();
+        respGameInit.currentTeamId = battleController.currentTeamId;
         respGameInit.battleSid = battleController.getSource().sid;
         respGameInit.mapId = battleController.getSource().mapId;
-        respGameInit.fighters = battleController.fighters.values();
-        respGameInit.allSprite = battleController.spriteMap.values().stream().map(sc -> sc.sprite).collect(Collectors.toList());
+        respGameInit.teamInfos = battleController.teamInfos;
+        SpriteController[][] sprites = battleController.pointSprites;
+        respGameInit.allSprite = new ArrayList<>();
+        for (int i = 0; i < sprites.length; i++) {
+            for (int j = 0; j < sprites[i].length; j++) {
+                SpriteController spc = sprites[i][j];
+                if (spc != null) {
+                    respGameInit.allSprite.add(spc.sprite);
+                }
+            }
+        }
         battleController.broadcast(respGameInit);
     }
 
@@ -62,7 +74,11 @@ public interface BattleMessage {
         battleController.broadcast(currentGoInfo);
     }
 
-    static void broadcastGameInput(BattleController battleController) {
-
+    static void sendMove(BattleController battleController, long playerId, MoveChess moveChess) {
+        RespMoveChess respMoveChess = new RespMoveChess();
+        respMoveChess.roleUid = playerId;
+        respMoveChess.moveChess = moveChess;
+        battleController.broadcast(respMoveChess);
     }
+
 }

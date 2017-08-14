@@ -5,17 +5,10 @@
 
 package org.alan.chess.logic.room;
 
-import org.alan.chess.logic.battle.PlayerFighter;
 import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.controller.PlayerController;
-import org.alan.chess.logic.match.MatchInfo;
 import org.alan.chess.logic.sample.room.Room;
 import org.alan.chess.logic.scene.SceneController;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created on 2017/4/24.
@@ -36,16 +29,6 @@ public class RoomController extends SceneController<Room> {
             roomSits[i] = new RoomSit(i);
         }
         ownerSit = 0;
-    }
-
-    public Map<Long, PlayerFighter> getFighters() {
-        Map<Long, PlayerFighter> fighters = new HashMap<>();
-        for (RoomSit sit : roomSits) {
-            if (sit.playerController != null) {
-                fighters.put(sit.playerController.playerId(), new PlayerFighter(sit.playerController));
-            }
-        }
-        return fighters;
     }
 
     public RoomSit joinRoom(PlayerController playerController) {
@@ -116,20 +99,5 @@ public class RoomController extends SceneController<Room> {
             }
         }
         return null;
-    }
-
-    public class RoomSit {
-        public int sit;
-        public boolean open = true;
-        public PlayerController playerController;
-
-        public RoomSit(int sit) {
-            this.sit = sit;
-        }
-
-        public RoomSit(int sit, PlayerController playerController) {
-            this(sit);
-            this.playerController = playerController;
-        }
     }
 }

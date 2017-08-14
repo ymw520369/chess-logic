@@ -14,6 +14,7 @@ import org.alan.chess.logic.controller.PlayerController;
  * @since 1.0
  */
 public class PlayerFighter {
+    public int teamId;
     public long playerId;
     public String playerName;
     public transient PlayerController playerController;

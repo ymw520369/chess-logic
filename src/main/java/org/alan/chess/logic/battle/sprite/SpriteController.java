@@ -1,5 +1,6 @@
 package org.alan.chess.logic.battle.sprite;
 
+import org.alan.chess.logic.battle.BattleController;
 import org.alan.chess.logic.battle.BattlePoint;
 import org.alan.chess.logic.sample.battle.CardSprite;
 
@@ -11,8 +12,8 @@ import org.alan.chess.logic.sample.battle.CardSprite;
  */
 public abstract class SpriteController {
     public CardSprite sprite;
+    public BattleController battleController;
 
-    public abstract boolean canMove(BattlePoint point);
 
-    public abstract void moveTo(BattlePoint point);
+    public abstract boolean moveTo(BattlePoint point);
 }
