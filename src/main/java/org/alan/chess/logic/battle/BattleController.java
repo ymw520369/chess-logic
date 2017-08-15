@@ -105,7 +105,6 @@ public class BattleController extends SceneController<Battle> implements TimerLi
 
     public void start() {
         nextTeam();
-        timerCenter.add(new TimerEvent<>(this, "END", 0, 1, 3).withTimeUnit(TimeUnit.MINUTES));
     }
 
     public void stop() {

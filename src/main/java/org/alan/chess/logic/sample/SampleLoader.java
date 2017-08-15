@@ -5,10 +5,6 @@
 
 package org.alan.chess.logic.sample;
 
-import org.alan.mars.sample.Sample;
-import org.alan.mars.sample.SampleFactory;
-import org.alan.mars.sample.helper.SampleReflectHelper;
-import org.alan.utils.ExcelUtil;
 import org.alan.utils.FileHelper;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -22,10 +18,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 样本加载器
@@ -114,44 +108,44 @@ public class SampleLoader extends FileAlterationListenerAdaptor
         String clazzName = sampleConfig.samplePackage + "." + parent + "."
                 + className;
         try {
-            Class<Sample> clazz = (Class<Sample>) Class.forName(clazzName);
-            List<Sample> samples = SampleReflectHelper.resolveSample(clazz, names,
-                    values);
-
-            Field field = clazz.getField("factory");
-            SampleFactory factory = (SampleFactory) field.get(null);
-            factory.addSamples(samples);
+//            Class<Sample> clazz = (Class<Sample>) Class.forName(clazzName);
+//            List<Sample> samples = SampleReflectHelper.resolveSample(clazz, names,
+//                    values);
+//
+//            Field field = clazz.getField("factory");
+//            SampleFactory factory = (SampleFactory) field.get(null);
+//            factory.addSamples(samples);
         } catch (Exception e) {
             log.warn("parse file error, file is {}", fileName, e);
         }
     }
 
     public void loadSampleByExcel(File file) {
-        Map<String, List<String[]>> sheetMap = ExcelUtil.readExcelFile(file);
-        sheetMap.forEach((name, values) -> {
-            if (values == null || values.size() <= 4) {
-                log.warn("cant use excel file {}, sheet {} 因为行数不够", file.getName(), name);
-                return;
-            }
-            String fileName = file.getName();
-            String pkg = fileName.substring(0, fileName.indexOf('.'));
-            String className = name;
-            values.remove(0);// 第一行为说明，不要
-            values.remove(0);// 第2行为类型，不要
-            String[] names = values.remove(0); // 第3行为字段名称
-            values.remove(0);// 第4行为说明，不要
-            String clazzName = sampleConfig.samplePackage + "." + pkg + "."
-                    + className;
-            try {
-                Class<Sample> clazz = (Class<Sample>) Class.forName(clazzName);
-                List<Sample> samples = SampleReflectHelper.resolveSample(clazz, names,
-                        values);
-                Field field = clazz.getField("factory");
-                SampleFactory factory = (SampleFactory) field.get(null);
-                factory.addSamples(samples);
-            } catch (Exception e) {
-                log.warn("parse file error, file is {}", fileName, e);
-            }
-        });
+//        Map<String, List<String[]>> sheetMap = ExcelUtil.readExcelFile(file);
+//        sheetMap.forEach((name, values) -> {
+//            if (values == null || values.size() <= 4) {
+//                log.warn("cant use excel file {}, sheet {} 因为行数不够", file.getName(), name);
+//                return;
+//            }
+//            String fileName = file.getName();
+//            String pkg = fileName.substring(0, fileName.indexOf('.'));
+//            String className = name;
+//            values.remove(0);// 第一行为说明，不要
+//            values.remove(0);// 第2行为类型，不要
+//            String[] names = values.remove(0); // 第3行为字段名称
+//            values.remove(0);// 第4行为说明，不要
+//            String clazzName = sampleConfig.samplePackage + "." + pkg + "."
+//                    + className;
+//            try {
+//                Class<Sample> clazz = (Class<Sample>) Class.forName(clazzName);
+//                List<Sample> samples = SampleReflectHelper.resolveSample(clazz, names,
+//                        values);
+//                Field field = clazz.getField("factory");
+//                SampleFactory factory = (SampleFactory) field.get(null);
+//                factory.addSamples(samples);
+//            } catch (Exception e) {
+//                log.warn("parse file error, file is {}", fileName, e);
+//            }
+//        });
     }
 }

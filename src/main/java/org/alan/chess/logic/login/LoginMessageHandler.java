@@ -80,6 +80,8 @@ public class LoginMessageHandler {
     }
 
     @ResponseMessage(messageType = 1000, cmd = 1)
+    @ProtobufMessage
     public static class CreateRole {
+        public boolean need;
     }
 }
