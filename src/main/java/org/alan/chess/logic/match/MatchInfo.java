@@ -1,11 +1,9 @@
 package org.alan.chess.logic.match;
 
 import org.alan.chess.logic.battle.PlayerFighter;
+import org.alan.chess.logic.battle.TeamInfo;
 import org.alan.chess.logic.room.RoomController;
 import org.alan.chess.logic.room.RoomSit;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created on 2017/8/10.

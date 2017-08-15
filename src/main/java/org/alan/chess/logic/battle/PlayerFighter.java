@@ -6,6 +6,7 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.controller.PlayerController;
+import org.alan.mars.protostuff.ProtobufMessage;
 
 /**
  * Created on 2017/4/25.
@@ -13,6 +14,7 @@ import org.alan.chess.logic.controller.PlayerController;
  * @author Alan
  * @since 1.0
  */
+@ProtobufMessage
 public class PlayerFighter {
     public int teamId;
     public long playerId;

@@ -1,13 +1,15 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.battle.sprite.SpriteController;
-import org.alan.chess.logic.match.TeamInfo;
 import org.alan.chess.logic.sample.battle.CardSprite;
+import org.alan.mars.protostuff.ProtobufMessage;
 import org.alan.mars.protostuff.RequestMessage;
 import org.alan.mars.protostuff.ResponseMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created on 2017/8/11.
@@ -18,27 +20,31 @@ import java.util.Collection;
 public interface BattleMessage {
 
     @RequestMessage
+    @ProtobufMessage
     class MoveChess {
         public BattlePoint fromPoint;
         public BattlePoint toPoint;
     }
 
     @ResponseMessage(messageType = 1200, cmd = 2)
+    @ProtobufMessage
     class RespMoveChess {
         public long roleUid;
         public MoveChess moveChess;
     }
 
     @ResponseMessage(messageType = 1200, cmd = 4)
+    @ProtobufMessage
     class RespGameInit {
         public int currentTeamId;
         public int mapId;
         public int battleSid;
         public Collection<CardSprite> allSprite;
-        public TeamInfo[] teamInfos;
+        public List<TeamInfo> teamInfos;
     }
 
     @ResponseMessage(messageType = 1200, cmd = 6)
+    @ProtobufMessage
     class RespCurrentGoInfo {
         public int countdownSecond;
         public int roundNum;
@@ -52,7 +58,7 @@ public interface BattleMessage {
         respGameInit.currentTeamId = battleController.currentTeamId;
         respGameInit.battleSid = battleController.getSource().sid;
         respGameInit.mapId = battleController.getSource().mapId;
-        respGameInit.teamInfos = battleController.teamInfos;
+        respGameInit.teamInfos = Arrays.asList(battleController.teamInfos);
         SpriteController[][] sprites = battleController.pointSprites;
         respGameInit.allSprite = new ArrayList<>();
         for (int i = 0; i < sprites.length; i++) {

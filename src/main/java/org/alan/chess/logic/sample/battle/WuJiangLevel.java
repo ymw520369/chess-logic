@@ -5,13 +5,15 @@
  import org.alan.mars.sample.SampleFactory;
  import org.alan.mars.sample.impl.SampleFactoryImpl;
  import com.dyuproject.protostuff.Tag;
+ import org.alan.mars.protostuff.ProtobufMessage;
  import java.util.*;
 
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-15 01:12:35
+ * @Date 2017-08-15 22:56:43
  */
+ @ProtobufMessage
  public class WuJiangLevel extends Sample{
     public static SampleFactory<WuJiangLevel> factory = new SampleFactoryImpl<>();
     public static WuJiangLevel getWuJiangLevel(int sid) {

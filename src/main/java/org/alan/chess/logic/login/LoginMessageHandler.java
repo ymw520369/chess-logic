@@ -3,12 +3,15 @@ package org.alan.chess.logic.login;
 import org.alan.chess.logic.bean.Role;
 import org.alan.chess.logic.bean.UserInfo;
 import org.alan.chess.logic.manager.LogicManager;
-import org.alan.chess.logic.service.RoleService;
-import org.alan.chess.logic.service.UserService;
+import org.alan.chess.logic.dao.PlayerDao;
+import org.alan.chess.logic.dao.UserDao;
 import org.alan.mars.protostuff.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2017/8/2.
@@ -21,9 +24,9 @@ import org.springframework.stereotype.Component;
 public class LoginMessageHandler {
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private RoleService roleService;
+    private PlayerDao roleService;
 
-    private UserService userService;
+    private UserDao userService;
 
     private LogicManager logicManager;
 
@@ -67,6 +70,7 @@ public class LoginMessageHandler {
 
 
     @RequestMessage
+    @ProtobufMessage
     public static class VertifyUserInfo {
         public String token;
         public long userId;
@@ -74,6 +78,7 @@ public class LoginMessageHandler {
     }
 
     @RequestMessage
+    @ProtobufMessage
     public static class ReqCreateRole {
         public VertifyUserInfo vertifyUserInfo;
         public String name;
@@ -82,6 +87,8 @@ public class LoginMessageHandler {
     @ResponseMessage(messageType = 1000, cmd = 1)
     @ProtobufMessage
     public static class CreateRole {
-        public boolean need;
+        public List<Boolean> need;
+        public List<Integer> ids;
+        public byte[] data;
     }
 }

@@ -9,7 +9,6 @@ import org.alan.chess.logic.battle.BattleMessage.MoveChess;
 import org.alan.chess.logic.battle.sprite.SpriteController;
 import org.alan.chess.logic.battle.sprite.SpriteManager;
 import org.alan.chess.logic.match.MatchInfo;
-import org.alan.chess.logic.match.TeamInfo;
 import org.alan.chess.logic.sample.battle.Battle;
 import org.alan.chess.logic.sample.battle.CardSprite;
 import org.alan.chess.logic.scene.SceneController;
@@ -138,7 +137,7 @@ public class BattleController extends SceneController<Battle> implements TimerLi
         } else {
             currentTeamId++;
         }
-        currentPlayerId = teamInfos[currentTeamId].fighters[0].playerId;
+        currentPlayerId = teamInfos[currentTeamId].fighter().playerId;
         BattleMessage.sendCurrentGoInfo(this, newRound);
         //服务器开始计时
         countdownEvent = new TimerEvent<>(this, source.countdownSecond, "COUNTDOWN")
@@ -158,7 +157,7 @@ public class BattleController extends SceneController<Battle> implements TimerLi
 
     public PlayerFighter getFighter(long playerId) {
         for (TeamInfo teamInfo : teamInfos) {
-            PlayerFighter playerFighter = teamInfo.fighters[0];
+            PlayerFighter playerFighter = teamInfo.fighter();
             if (playerFighter.playerId == playerId) {
                 return playerFighter;
             }
