@@ -9,6 +9,7 @@ import org.alan.mars.protostuff.MarsMessageChannelInitializer;
 import org.alan.mars.protostuff.MarsMessageDispatcher;
 import org.alan.mars.timer.TimerCenter;
 import org.alan.mars.uid.UidCacheManager;
+import org.alan.utils.text.TextValidity;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -78,7 +79,7 @@ public class LogicApplication implements CommandLineRunner {
 
     @Bean("timerCenter")
     public TimerCenter createEventTimer() {
-        return  timerCenter = new TimerCenter("timerCenter");
+        return timerCenter = new TimerCenter("timerCenter");
     }
 
     @Bean
@@ -89,5 +90,10 @@ public class LogicApplication implements CommandLineRunner {
     @Bean
     public UidCacheManager createUidCacheManager() {
         return new UidCacheManager(clusterSystem, true);
+    }
+
+    @Bean
+    public TextValidity textValidity() {
+        return new TextValidity();
     }
 }

@@ -1,6 +1,6 @@
 package org.alan.chess.logic.controller;
 
-import org.alan.chess.logic.bean.Player;
+import org.alan.chess.logic.data.Player;
 import org.alan.mars.protostuff.PFSession;
 
 /**

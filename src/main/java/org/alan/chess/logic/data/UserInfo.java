@@ -1,4 +1,4 @@
-package org.alan.chess.logic.bean;
+package org.alan.chess.logic.data;
 
 /**
  * Created on 2017/8/2.

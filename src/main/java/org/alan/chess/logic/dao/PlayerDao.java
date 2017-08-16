@@ -1,6 +1,8 @@
 package org.alan.chess.logic.dao;
 
-import org.alan.chess.logic.bean.Role;
+import org.alan.chess.logic.data.Player;
+import org.alan.mars.mongo.MarsMongoDao;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * Created on 2017/8/2.
@@ -8,8 +10,12 @@ import org.alan.chess.logic.bean.Role;
  * @author Alan
  * @since 1.0
  */
-public interface PlayerDao {
-    Role findRoleByUserId(int zoneId,long userId);
+public abstract class PlayerDao extends MarsMongoDao<Player, Long> {
+    public PlayerDao(MongoTemplate mongoTemplate) {
+        super(Player.class, mongoTemplate);
+    }
 
-    Role createRole(int zoneId,long userId);
+    public abstract Player findPlayerByUserId(int zoneId, long userId);
+
+    public abstract Player createPlayer(int zoneId, long userId);
 }

@@ -11,7 +11,7 @@
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-15 22:56:43
+ * @Date 2017-08-17 01:14:53
  */
  @ProtobufMessage
  public class Battle extends Sample{
