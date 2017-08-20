@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.alan.chess.logic.constant.MessageCmdConst.*;
+import static org.alan.chess.logic.constant.MessageTypeConst.*;
+
 /**
  * Created on 2017/8/2.
  *
@@ -19,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
-@MessageType(1000)
+@MessageType(LOGIN)
 public class LoginMessageHandler {
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -33,7 +36,7 @@ public class LoginMessageHandler {
     private DataManager dataManager;
 
 
-    @Command(1)
+    @Command(LOGIN_REQ_VERTIFY)
     public void vertifyAccount(PFSession session, VertifyUserInfo vertifyInfo) {
         UserInfo userInfo = dataManager.vertifyAccount(vertifyInfo.token, vertifyInfo.userId, vertifyInfo.zoneId);
         if (userInfo != null) {
@@ -47,7 +50,7 @@ public class LoginMessageHandler {
         }
     }
 
-    @Command(2)
+    @Command(LOGIN_REQ_CREATE_ROLE)
     public void createRole(PFSession session, ReqCreateRole reqCreateRole) {
         VertifyUserInfo vertifyInfo = reqCreateRole.vertifyUserInfo;
         UserInfo userInfo = dataManager.vertifyAccount(vertifyInfo.token, vertifyInfo.userId, vertifyInfo.zoneId);
@@ -66,7 +69,6 @@ public class LoginMessageHandler {
     }
 
 
-    @RequestMessage
     @ProtobufMessage
     public static class VertifyUserInfo {
         public String token;
@@ -74,15 +76,13 @@ public class LoginMessageHandler {
         public int zoneId;
     }
 
-    @RequestMessage
     @ProtobufMessage
     public static class ReqCreateRole {
         public VertifyUserInfo vertifyUserInfo;
         public String name;
     }
 
-    @ResponseMessage(messageType = 1000, cmd = 1)
-    @ProtobufMessage
+    @ProtobufMessage(resp = true, messageType = LOGIN, cmd = LOGIN_RESP_CREATE_ROLE)
     public static class CreateRole {
         public boolean success;
     }

@@ -1,10 +1,13 @@
 package org.alan.chess.logic.manager;
 
+import org.alan.chess.logic.constant.MessageCmdConst;
+import org.alan.chess.logic.constant.MessageTypeConst;
 import org.alan.chess.logic.data.Player;
 import org.alan.chess.logic.data.Role;
 import org.alan.chess.logic.data.UserInfo;
 import org.alan.chess.logic.controller.PlayerController;
 import org.alan.mars.protostuff.PFSession;
+import org.alan.mars.protostuff.ProtobufMessage;
 import org.alan.mars.protostuff.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogicManager {
 
-    @ResponseMessage(messageType = 1000, cmd = 2)
+    @ProtobufMessage(resp = true, messageType = MessageTypeConst.LOGIN, cmd = MessageCmdConst.LOGIN_RESP_ENTER_GAME)
     public static class EnterGame {
         public Player player;
 
