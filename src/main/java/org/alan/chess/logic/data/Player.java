@@ -1,5 +1,6 @@
 package org.alan.chess.logic.data;
 
+import org.alan.mars.data.UserInfo;
 import org.alan.mars.protostuff.ProtobufMessage;
 
 /**

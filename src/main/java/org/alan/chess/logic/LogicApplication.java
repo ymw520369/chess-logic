@@ -74,7 +74,7 @@ public class LogicApplication implements CommandLineRunner {
 
     @Bean
     public MarsMessageDispatcher createServerMessageDispatcher() {
-        return new MarsMessageDispatcher();
+        return new MarsMessageDispatcher("org.alan");
     }
 
     @Bean("timerCenter")

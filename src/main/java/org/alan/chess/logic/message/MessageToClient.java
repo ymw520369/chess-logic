@@ -2,7 +2,10 @@ package org.alan.chess.logic.message;
 
 import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.mars.protostuff.PFSession;
-import org.alan.mars.protostuff.ResponseMessage;
+import org.alan.mars.protostuff.ProtobufMessage;
+
+import static org.alan.chess.logic.constant.MessageCmdConst.TIPS_RESP_RESULT;
+import static org.alan.chess.logic.constant.MessageTypeConst.*;
 
 /**
  * 与客户端通信消息函数类
@@ -14,15 +17,17 @@ import org.alan.mars.protostuff.ResponseMessage;
  */
 public interface MessageToClient {
 
-    @ResponseMessage(messageType = 1002, cmd = 1)
+    @ProtobufMessage(resp = true, messageType = TIPS, cmd = TIPS_RESP_RESULT)
     class GameTips {
         public static final byte TIMER_TIPS = 1, CLOSED_TIPS = 2;
         public int tipsType;
-        public GameResultEnum gameResultEnum;
+        public int resultCode;
+        public String resultDes;
 
         public GameTips(int tipsType, GameResultEnum gameResultEnum) {
             this.tipsType = tipsType;
-            this.gameResultEnum = gameResultEnum;
+            this.resultCode = gameResultEnum.code;
+            resultDes=gameResultEnum.message;
         }
     }
 

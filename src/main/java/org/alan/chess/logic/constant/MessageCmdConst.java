@@ -10,4 +10,5 @@ public final class MessageCmdConst {
     public final static int LOGIN_RESP_CREATE_ROLE=2;
     public final static int LOGIN_REQ_CREATE_ROLE=3;
     public final static int LOGIN_RESP_ENTER_GAME=4;
+    public final static int TIPS_RESP_RESULT=2;
 }

@@ -7,4 +7,5 @@ package org.alan.chess.logic.constant;
  */
 public final class MessageTypeConst {
     public static final int LOGIN=1000;
+    public static final int TIPS=1002;
 }

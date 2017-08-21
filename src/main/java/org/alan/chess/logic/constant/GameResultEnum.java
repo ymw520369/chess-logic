@@ -5,6 +5,8 @@
 
 package org.alan.chess.logic.constant;
 
+import org.alan.mars.protostuff.ProtobufMessage;
+
 /**
  * 游戏通用返回值枚举定义
  * <p>
@@ -13,6 +15,7 @@ package org.alan.chess.logic.constant;
  * @author Chow
  * @since 1.0
  */
+@ProtobufMessage
 public enum GameResultEnum {
     SUCCESS(0, "成功"),
     FAILURE(1, "失败"),
@@ -28,8 +31,8 @@ public enum GameResultEnum {
     SEASON_NOT_OPENED(11, "赛季未开启");
 
 
-    int code;
-    String message;
+    public int code;
+    public String message;
 
     GameResultEnum(int code, String message) {
         this.code = code;

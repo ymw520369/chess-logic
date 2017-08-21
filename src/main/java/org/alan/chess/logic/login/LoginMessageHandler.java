@@ -1,11 +1,13 @@
 package org.alan.chess.logic.login;
 
+import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.controller.PlayerController;
 import org.alan.chess.logic.data.Role;
-import org.alan.chess.logic.data.UserInfo;
 import org.alan.chess.logic.dao.RoleDao;
 import org.alan.chess.logic.manager.DataManager;
 import org.alan.chess.logic.manager.LogicManager;
+import org.alan.chess.logic.message.MessageToClient;
+import org.alan.mars.data.UserInfo;
 import org.alan.mars.protostuff.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,8 @@ public class LoginMessageHandler {
                 PlayerController playerController = dataManager.bindPlayer(role, userInfo, session);
                 logicManager.enterGame(playerController);
             }
+        } else {
+            MessageToClient.sendClosedGameTips(session, GameResultEnum.ERROR);
         }
     }
 

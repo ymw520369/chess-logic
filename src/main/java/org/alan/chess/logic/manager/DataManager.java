@@ -7,13 +7,14 @@ import org.alan.chess.logic.controller.PlayerController;
 import org.alan.chess.logic.dao.RoleDao;
 import org.alan.chess.logic.data.Player;
 import org.alan.chess.logic.data.Role;
-import org.alan.chess.logic.data.UserInfo;
+import org.alan.mars.data.UserInfo;
 import org.alan.mars.protostuff.PFSession;
 import org.alan.mars.uid.UidCacheManager;
 import org.alan.mars.uid.UidTypeEnum;
 import org.alan.utils.StringUtils;
 import org.alan.utils.text.TextValidity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,8 @@ public class DataManager {
     private RoleDao roleDao;
 
     public UserInfo vertifyAccount(String token, long userId, int zoneId) {
-        UserInfo userInfo = (UserInfo) redisTemplate.opsForHash().get(RedisKey.USER_INFO, userId);
+        HashOperations<String,String,UserInfo> hashOperations=redisTemplate.opsForHash();
+        UserInfo userInfo = hashOperations.get(RedisKey.USER_INFO, token);
         if (userInfo != null) {
             //登录信息认证通过
             if (token.equals(userInfo.token) && userId == userInfo.userId) {
