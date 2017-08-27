@@ -13,4 +13,5 @@ public class Role {
     public long roleUid;
     public String name;
     public int zoneId;
+    public long diamond;
 }

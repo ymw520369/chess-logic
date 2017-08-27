@@ -6,6 +6,7 @@
 package org.alan.chess.logic.room;
 
 import org.alan.chess.logic.constant.GameResultEnum;
+import org.alan.chess.logic.constant.MessageConst;
 import org.alan.chess.logic.controller.PlayerController;
 import org.alan.chess.logic.match.MatchInfo;
 import org.alan.chess.logic.match.MatchManager;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.plugin2.message.Message;
 
 /**
  * Created on 2017/4/24.
@@ -30,10 +32,8 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
-@MessageType(1100)
+@MessageType(MessageConst.Room.TYPE)
 public class RoomMessageHandler {
-    @Autowired
-    private SceneManager sceneManager;
     @Autowired
     private MatchManager matchManager;
     @Autowired
@@ -41,7 +41,7 @@ public class RoomMessageHandler {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Command(1101)
+    @Command(MessageConst.Room.REQ_CREATE_ROOM)
     public void createRoom(PlayerController playerController, ReqCreateRoom reqCreateRoom) {
         int roomType = reqCreateRoom.roomType;
         log.debug("收到玩家创建房间请求，roleUid={},roomType={}", playerController.player.role.roleUid, roomType);
@@ -54,11 +54,11 @@ public class RoomMessageHandler {
         MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
     }
 
-    @Command(1102)
+    @Command(MessageConst.Room.REQ_BEGIN_MATCH)
     public void beginMatch(PlayerController playerController) {
         log.info("收到玩家匹配请求，roleUid={},session={}", playerController.player.role.roleUid);
         int sceneId = playerController.player.sceneId;
-        SceneController sceneController = sceneManager.find(sceneId);
+        SceneController sceneController = SceneManager.find(sceneId);
         if (sceneController instanceof RoomController) {
             RoomController roomController = (RoomController) sceneController;
             if (roomController.isOwner(playerController) && roomController.roomStatus == RoomStatus.WAIT) {
@@ -70,11 +70,11 @@ public class RoomMessageHandler {
         MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
     }
 
-    @Command(1103)
+    @Command(MessageConst.Room.REQ_CANEL_MATCH)
     public void cancelMatch(PlayerController playerController) {
         log.debug("收到玩家取消匹配请求，roleUid={}", playerController.player.role.roleUid);
         int sceneId = playerController.player.sceneId;
-        SceneController sceneController = sceneManager.find(sceneId);
+        SceneController sceneController = SceneManager.find(sceneId);
         if (sceneController instanceof RoomController) {
             RoomController roomController = (RoomController) sceneController;
             if (roomController.isOwner(playerController) && roomController.roomStatus == RoomStatus.MATCH) {
@@ -86,7 +86,7 @@ public class RoomMessageHandler {
         MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
     }
 
-    @Command(1104)
+    @Command(MessageConst.Room.REQ_QUICK_MATCH)
     public void quickMatch(PlayerController playerController, ReqCreateRoom reqCreateRoom) {
         log.info("收到玩家快速匹配请求，roleUid={},session={}", playerController.player.role.roleUid);
         int roomType = reqCreateRoom.roomType;

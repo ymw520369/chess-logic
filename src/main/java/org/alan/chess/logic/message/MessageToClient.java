@@ -4,8 +4,7 @@ import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.mars.protostuff.PFSession;
 import org.alan.mars.protostuff.ProtobufMessage;
 
-import static org.alan.chess.logic.constant.MessageCmdConst.TIPS_RESP_RESULT;
-import static org.alan.chess.logic.constant.MessageTypeConst.*;
+import static org.alan.chess.logic.constant.MessageConst.Tips;
 
 /**
  * 与客户端通信消息函数类
@@ -17,7 +16,7 @@ import static org.alan.chess.logic.constant.MessageTypeConst.*;
  */
 public interface MessageToClient {
 
-    @ProtobufMessage(resp = true, messageType = TIPS, cmd = TIPS_RESP_RESULT)
+    @ProtobufMessage(resp = true, messageType = Tips.TYPE, cmd = Tips.TIPS_RESP_RESULT)
     class GameTips {
         public static final byte TIMER_TIPS = 1, CLOSED_TIPS = 2;
         public int tipsType;

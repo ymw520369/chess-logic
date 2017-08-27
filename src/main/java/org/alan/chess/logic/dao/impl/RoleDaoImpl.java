@@ -43,7 +43,7 @@ public class RoleDaoImpl extends RoleDao {
     public Role findByUserId(int zoneId, long userId) {
         log.debug("find role, userid is {},zone is {}", userId, zoneId);
         return mongoTemplate.findOne(
-                Query.query(Criteria.where("userUid").is(userId)), Role.class);
+                Query.query(Criteria.where("userId").is(userId).and("zoneId").is(zoneId)), Role.class);
     }
 
     @Override

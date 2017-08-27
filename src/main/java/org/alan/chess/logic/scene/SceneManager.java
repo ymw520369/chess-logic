@@ -18,11 +18,14 @@ import java.util.Map;
  * @author Alan
  * @since 1.0
  */
-@Component
 public class SceneManager {
-    private Map<Integer, SceneController> sceneMap = new HashMap<>();
+    private static Map<Integer, SceneController> sceneMap = new HashMap<>();
 
-    public SceneController find(int uid) {
+    public static SceneController find(int uid) {
         return sceneMap.get(uid);
+    }
+
+    protected static void addSceneController(SceneController sceneController) {
+        sceneMap.put(sceneController.uid, sceneController);
     }
 }

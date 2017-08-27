@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class BattleController extends SceneController<Battle> implements TimerListener {
     public final static int UNINIT_TEAMID = -1;
+    public final static int TEAM_HOME = 1, TEAM_HEI = 2;
 
     //////////////////////////下面为实例变量//////////////////////////
     /* 定时器*/

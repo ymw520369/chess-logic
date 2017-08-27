@@ -6,6 +6,7 @@
 package org.alan.chess.logic.scene;
 
 import org.alan.chess.logic.controller.PlayerController;
+import org.alan.chess.logic.sample.scene.Scene;
 import org.alan.mars.protostuff.ResponseMessage;
 
 import java.util.HashMap;

@@ -35,5 +35,6 @@ public class PlayerController {
     }
 
     public void sendToClient(Object msg) {
+        session.send(msg);
     }
 }

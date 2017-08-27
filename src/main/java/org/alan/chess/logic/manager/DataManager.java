@@ -1,6 +1,6 @@
 package org.alan.chess.logic.manager;
 
-import org.alan.chess.logic.config.GameConfig;
+import org.alan.chess.logic.config.LogicConfig;
 import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.constant.RedisKey;
 import org.alan.chess.logic.controller.PlayerController;
@@ -33,19 +33,16 @@ public class DataManager {
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    private GameConfig gameConfig;
+    private LogicConfig gameConfig;
 
     @Autowired
     private TextValidity textValidity;
 
     @Autowired
-    private UidCacheManager uidCacheManager;
-
-    @Autowired
     private RoleDao roleDao;
 
     public UserInfo vertifyAccount(String token, long userId, int zoneId) {
-        HashOperations<String,String,UserInfo> hashOperations=redisTemplate.opsForHash();
+        HashOperations<String, String, UserInfo> hashOperations = redisTemplate.opsForHash();
         UserInfo userInfo = hashOperations.get(RedisKey.USER_INFO, token);
         if (userInfo != null) {
             //登录信息认证通过
@@ -59,14 +56,17 @@ public class DataManager {
     public Role createRole(int zoneId, long userId, String roleName) {
         Role role = roleDao.findByUserId(zoneId, userId);
         if (role == null && checkAddLockRoleName(roleName) == GameResultEnum.SUCCESS) {
-            long roleUid = uidCacheManager.getUid(UidTypeEnum.ROLE_UID);
-            role = new Role();
-            role.name = roleName;
-            role.roleUid = roleUid;
-            role.userId = userId;
-            role.zoneId = zoneId;
-            roleDao.save(role);
-            redisTemplate.opsForSet().remove(RedisKey.ROLE_NAME_KEY, roleName);
+            try {
+                long roleUid = redisTemplate.opsForValue().increment(UidTypeEnum.ROLE_UID.name(), 1);
+                role = new Role();
+                role.name = roleName;
+                role.roleUid = roleUid;
+                role.userId = userId;
+                role.zoneId = zoneId;
+                roleDao.save(role);
+            } finally {
+                redisTemplate.opsForSet().remove(RedisKey.ROLE_NAME_KEY, roleName);
+            }
         }
         return role;
     }

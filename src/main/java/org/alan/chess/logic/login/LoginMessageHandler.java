@@ -1,21 +1,24 @@
 package org.alan.chess.logic.login;
 
+import com.dyuproject.protostuff.Tag;
 import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.controller.PlayerController;
-import org.alan.chess.logic.data.Role;
 import org.alan.chess.logic.dao.RoleDao;
+import org.alan.chess.logic.data.Role;
 import org.alan.chess.logic.manager.DataManager;
 import org.alan.chess.logic.manager.LogicManager;
 import org.alan.chess.logic.message.MessageToClient;
 import org.alan.mars.data.UserInfo;
-import org.alan.mars.protostuff.*;
+import org.alan.mars.protostuff.Command;
+import org.alan.mars.protostuff.MessageType;
+import org.alan.mars.protostuff.PFSession;
+import org.alan.mars.protostuff.ProtobufMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.alan.chess.logic.constant.MessageCmdConst.*;
-import static org.alan.chess.logic.constant.MessageTypeConst.*;
+import static org.alan.chess.logic.constant.MessageConst.Login;
 
 /**
  * Created on 2017/8/2.
@@ -24,7 +27,7 @@ import static org.alan.chess.logic.constant.MessageTypeConst.*;
  * @since 1.0
  */
 @Component
-@MessageType(LOGIN)
+@MessageType(Login.TYPE)
 public class LoginMessageHandler {
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -38,7 +41,7 @@ public class LoginMessageHandler {
     private DataManager dataManager;
 
 
-    @Command(LOGIN_REQ_VERTIFY)
+    @Command(Login.REQ_VERTIFY)
     public void vertifyAccount(PFSession session, VertifyUserInfo vertifyInfo) {
         UserInfo userInfo = dataManager.vertifyAccount(vertifyInfo.token, vertifyInfo.userId, vertifyInfo.zoneId);
         if (userInfo != null) {
@@ -54,7 +57,7 @@ public class LoginMessageHandler {
         }
     }
 
-    @Command(LOGIN_REQ_CREATE_ROLE)
+    @Command(Login.REQ_CREATE_ROLE)
     public void createRole(PFSession session, ReqCreateRole reqCreateRole) {
         VertifyUserInfo vertifyInfo = reqCreateRole.vertifyUserInfo;
         UserInfo userInfo = dataManager.vertifyAccount(vertifyInfo.token, vertifyInfo.userId, vertifyInfo.zoneId);
@@ -75,18 +78,23 @@ public class LoginMessageHandler {
 
     @ProtobufMessage
     public static class VertifyUserInfo {
+        @Tag(1)
         public String token;
+        @Tag(2)
         public long userId;
+        @Tag(3)
         public int zoneId;
     }
 
     @ProtobufMessage
     public static class ReqCreateRole {
+        @Tag(1)
         public VertifyUserInfo vertifyUserInfo;
+        @Tag(2)
         public String name;
     }
 
-    @ProtobufMessage(resp = true, messageType = LOGIN, cmd = LOGIN_RESP_CREATE_ROLE)
+    @ProtobufMessage(resp = true, messageType = Login.TYPE, cmd = Login.RESP_CREATE_ROLE)
     public static class CreateRole {
         public boolean success;
     }

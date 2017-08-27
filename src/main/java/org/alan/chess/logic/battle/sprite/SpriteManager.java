@@ -25,7 +25,8 @@ public class SpriteManager implements CommandLineRunner {
         if (clazzs != null && !clazzs.isEmpty()) {
             clazzs.forEach(clazz -> {
                 SpriteScript spriteScript = clazz.getAnnotation(SpriteScript.class);
-                spriteControllers.put(spriteScript.value().ordinal(), clazz);
+                //此处做一个特殊处理，枚举下标是从0开始，配置中棋子是从1开始，所以这里做加1处理
+                spriteControllers.put(spriteScript.value().ordinal() + 1, clazz);
             });
         }
     }

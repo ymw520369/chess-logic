@@ -12,6 +12,7 @@ public class BingController extends SpriteController {
 
     @Override
     public boolean moveTo(BattlePoint point) {
+        //if(sprite.team==)
         return false;
     }
 }

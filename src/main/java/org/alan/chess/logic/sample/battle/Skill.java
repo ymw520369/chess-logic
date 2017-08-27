@@ -11,7 +11,7 @@
 /**
  * Auto generate by "Python tools"
  * 
- * @Date 2017-08-17 01:14:53
+ * @Date 2017-08-27 11:36:23
  */
  @ProtobufMessage
  public class Skill extends Sample{
