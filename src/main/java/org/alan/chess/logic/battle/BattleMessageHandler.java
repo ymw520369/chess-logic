@@ -6,6 +6,7 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.battle.BattleMessage.MoveChess;
+import org.alan.chess.logic.constant.MessageConst;
 import org.alan.chess.logic.controller.PlayerController;
 import org.alan.mars.protostuff.Command;
 import org.alan.mars.protostuff.MessageType;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
  * @author Alan
  * @since 1.0
  */
-@MessageType(1200)
+@MessageType(MessageConst.Battle.TYPE)
 @Component
 public class BattleMessageHandler {
 
@@ -29,12 +30,7 @@ public class BattleMessageHandler {
     @Autowired
     private BattleManager battleManager;
 
-    @Command(1201)
-    public void battleBegin(PlayerController playerController) {
-
-    }
-
-    @Command(1203)
+    @Command(MessageConst.Battle.REQ_GAME_INIT_DONE)
     public void gameInitDone(PlayerController playerController) {
         BattleController battleController = battleManager.find(playerController.sceneId());
         long roleUid = playerController.playerId();
@@ -45,7 +41,7 @@ public class BattleMessageHandler {
         }
     }
 
-    @Command(1205)
+    @Command(MessageConst.Battle.REQ_MOVE_CHESS)
     public void move(PlayerController playerController, MoveChess moveChess) {
         BattleController battleController = battleManager.find(playerController.sceneId());
         long roleUid = playerController.playerId();

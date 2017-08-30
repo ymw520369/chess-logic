@@ -59,15 +59,14 @@ public class RoomMessageHandler {
         log.info("收到玩家匹配请求，roleUid={},session={}", playerController.player.role.roleUid);
         int sceneId = playerController.player.sceneId;
         SceneController sceneController = SceneManager.find(sceneId);
+        GameResultEnum gameResultEnum = GameResultEnum.ILLEGAL;
         if (sceneController instanceof RoomController) {
             RoomController roomController = (RoomController) sceneController;
-            if (roomController.isOwner(playerController) && roomController.roomStatus == RoomStatus.WAIT) {
-                MatchInfo matchInfo = matchManager.addMatch(roomController);
-                roomController.broadcast(new RespBeginMatch(matchInfo.beginTime));
-                return;
-            }
+            gameResultEnum = roomController.beginMatch(playerController);
         }
-        MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
+        if (gameResultEnum != GameResultEnum.SUCCESS) {
+            MessageToClient.sendTimerGameTips(playerController.session, gameResultEnum);
+        }
     }
 
     @Command(MessageConst.Room.REQ_CANEL_MATCH)
@@ -75,24 +74,30 @@ public class RoomMessageHandler {
         log.debug("收到玩家取消匹配请求，roleUid={}", playerController.player.role.roleUid);
         int sceneId = playerController.player.sceneId;
         SceneController sceneController = SceneManager.find(sceneId);
+        GameResultEnum gameResultEnum = GameResultEnum.ILLEGAL;
         if (sceneController instanceof RoomController) {
             RoomController roomController = (RoomController) sceneController;
-            if (roomController.isOwner(playerController) && roomController.roomStatus == RoomStatus.MATCH) {
-                matchManager.cancelMatch(roomController);
-                roomController.broadcast(new RespCancelMatch());
-                return;
-            }
+            gameResultEnum = roomController.cancelMatch(playerController);
         }
-        MessageToClient.sendTimerGameTips(playerController.session, GameResultEnum.ILLEGAL);
+        if (gameResultEnum != GameResultEnum.SUCCESS) {
+            MessageToClient.sendTimerGameTips(playerController.session, gameResultEnum);
+        }
     }
 
     @Command(MessageConst.Room.REQ_QUICK_MATCH)
     public void quickMatch(PlayerController playerController, ReqCreateRoom reqCreateRoom) {
         log.info("收到玩家快速匹配请求，roleUid={},session={}", playerController.player.role.roleUid);
-        int roomType = reqCreateRoom.roomType;
-        RoomController roomController = roomManager.create(roomType, playerController);
-        MatchInfo matchInfo = matchManager.addMatch(roomController);
-        roomController.broadcast(new RespBeginMatch(matchInfo.beginTime));
+        int sceneId = playerController.player.sceneId;
+        SceneController sceneController = SceneManager.find(sceneId);
+        GameResultEnum gameResultEnum = GameResultEnum.ILLEGAL;
+        if (sceneController == null || !(sceneController instanceof RoomController)) {
+            int roomType = reqCreateRoom.roomType;
+            RoomController roomController = roomManager.create(roomType, playerController,true);
+            gameResultEnum = roomController.beginMatch(playerController);
+        }
+        if (gameResultEnum != GameResultEnum.SUCCESS) {
+            MessageToClient.sendTimerGameTips(playerController.session, gameResultEnum);
+        }
     }
 
 }

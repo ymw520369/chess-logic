@@ -8,7 +8,7 @@ package org.alan.chess.logic.match;
 import org.alan.chess.logic.battle.BattleManager;
 import org.alan.chess.logic.room.RoomController;
 import org.alan.chess.logic.sample.battle.Battle;
-import org.alan.chess.logic.sample.room.Room;
+import org.alan.chess.logic.sample.scene.Room;
 import org.alan.mars.timer.TimerCenter;
 import org.alan.mars.timer.TimerEvent;
 import org.alan.mars.timer.TimerListener;
@@ -17,7 +17,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -88,7 +87,7 @@ public class MatchManager implements TimerListener, CommandLineRunner {
 
     @Override
     public void onTimer(TimerEvent timerEvent) {
-        for (Entry<Room, ConcurrentLinkedQueue<MatchInfo>> entry : matchingMap.entrySet()) {
+        for (Map.Entry<Room, ConcurrentLinkedQueue<MatchInfo>> entry : matchingMap.entrySet()) {
             synchronized (entry.getKey()) {
                 ConcurrentLinkedQueue<MatchInfo> matchingQueue = entry.getValue();
                 if (matchingQueue == null || matchingQueue.isEmpty()) {
@@ -120,6 +119,6 @@ public class MatchManager implements TimerListener, CommandLineRunner {
     }
 
     private void matchSussessful(Room room, Set<MatchInfo> matchInfos) {
-        battleManager.startBattle(Battle.newBattle(room.getBattleSid()), matchInfos);
+        battleManager.startBattle(Battle.newBattle(room.battleSid), matchInfos);
     }
 }

@@ -1,5 +1,5 @@
 
- package org.alan.chess.logic.sample.battle;
+ package org.alan.chess.logic.sample.scene;
 
  import org.alan.mars.sample.Sample;
  import org.alan.mars.sample.SampleFactory;
@@ -14,20 +14,23 @@
  * @Date 2017-08-29 23:13:11
  */
  @ProtobufMessage
- public class Skill extends Sample{
-    public static SampleFactory<Skill> factory = new SampleFactoryImpl<>();
-    public static Skill getSkill(int sid) {
+ public class Room extends Sample{
+    public static SampleFactory<Room> factory = new SampleFactoryImpl<>();
+    public static Room getRoom(int sid) {
         return factory.getSample(sid);
     }
 
-    public static Skill newSkill(int sid) {
+    public static Room newRoom(int sid) {
         return factory.newSample(sid);
     }
  	@Tag(3)
-	// 技能描述
-	public String des;
+	// 场景类型
+	public int sceneType;
 	@Tag(4)
-	// 技能规则脚本
-	public String script;
+	// 房间允许人数
+	public int maxNum;
+	@Tag(5)
+	// 对应战斗类型ID
+	public int battleSid;
 
  }

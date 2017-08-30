@@ -7,6 +7,7 @@ import org.alan.chess.logic.battle.BattlePoint;
  * eamil mingweiyang@foxmail.com
  * date 2017/8/13
  */
+@SpriteScript(SpriteType.XIANG)
 public class XiangController extends SpriteController {
     @Override
     public boolean moveTo(BattlePoint point) {

@@ -53,6 +53,10 @@ public interface RoomMessage {
     @ProtobufMessage(resp = true, messageType = MessageConst.Room.TYPE, cmd = MessageConst.Room.RESP_CANEL_MATCH)
     class RespCancelMatch {
         public GameResultEnum gameResultEnum;
+
+        public RespCancelMatch(GameResultEnum gameResultEnum) {
+            this.gameResultEnum = gameResultEnum;
+        }
     }
 
 

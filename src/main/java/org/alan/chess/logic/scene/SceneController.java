@@ -5,9 +5,10 @@
 
 package org.alan.chess.logic.scene;
 
+import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.controller.PlayerController;
-import org.alan.chess.logic.sample.scene.Scene;
-import org.alan.mars.protostuff.ResponseMessage;
+import org.alan.chess.logic.event.GameListener;
+import org.alan.chess.logic.manager.PlayerListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +21,11 @@ import java.util.Map;
  * @author Alan
  * @since 1.0
  */
-public abstract class SceneController<T> {
+public abstract class SceneController<T>{
     public int uid;
     public T source;
     public long createTime;
+    public boolean destroy;
     public Map<Long, PlayerController> playerMap;
 
     public SceneController(int uid, T source, long createTime, Map<Long, PlayerController> playerMap) {
@@ -47,11 +49,10 @@ public abstract class SceneController<T> {
      * @param playerController
      * @return
      */
-    public boolean enterScene(PlayerController playerController) {
+    public GameResultEnum enter(PlayerController playerController) {
         playerMap.put(playerController.playerId(), playerController);
-        playerController.setSceneId(0);
-        broadcast(new RespEnterScene(uid, playerController.playerId()));
-        return true;
+        playerController.setSceneId(uid);
+        return GameResultEnum.SUCCESS;
     }
 
     /**
@@ -60,11 +61,29 @@ public abstract class SceneController<T> {
      * @param playerController
      * @return
      */
-    public boolean exitScene(PlayerController playerController) {
+    public GameResultEnum exit(PlayerController playerController) {
         playerMap.remove(playerController.playerId());
-        playerController.setSceneId(uid);
-        broadcast(new RespExitScene(uid, playerController.playerId()));
-        return true;
+        playerController.setSceneId(0);
+        return GameResultEnum.SUCCESS;
+    }
+
+    /**
+     * 场景注销方法
+     *
+     * @return
+     */
+    public void destroy() {
+        playerMap.clear();
+        destroy = true;
+    }
+
+    /**
+     * 是否已经销毁
+     *
+     * @return
+     */
+    public boolean isDestroy() {
+        return destroy;
     }
 
     /**
@@ -74,27 +93,5 @@ public abstract class SceneController<T> {
      */
     public void broadcast(Object msg) {
         playerMap.values().forEach(p -> p.sendToClient(msg));
-    }
-
-    @ResponseMessage(messageType = 1003, cmd = 1)
-    public static class RespEnterScene {
-        public int sceneId;
-        public long playerId;
-
-        public RespEnterScene(int sceneId, long playerId) {
-            this.sceneId = sceneId;
-            this.playerId = playerId;
-        }
-    }
-
-    @ResponseMessage(messageType = 1003, cmd = 2)
-    public static class RespExitScene {
-        public int sceneId;
-        public long playerId;
-
-        public RespExitScene(int sceneId, long playerId) {
-            this.sceneId = sceneId;
-            this.playerId = playerId;
-        }
     }
 }

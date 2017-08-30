@@ -76,7 +76,7 @@ public class BattleController extends SceneController<Battle> implements TimerLi
     }
 
     public void initSprite() {
-        pointSprites = new SpriteController[source.row][source.cell];
+        pointSprites = new SpriteController[source.cell][source.row];
         Collection<CardSprite> sprites = CardSprite.factory.getAllSamples();
         sprites.forEach(sprite -> {
             SpriteController spriteController = SpriteManager.create(sprite);

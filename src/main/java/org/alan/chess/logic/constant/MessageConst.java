@@ -31,4 +31,12 @@ public interface MessageConst {
         int REQ_QUICK_MATCH = 7;
     }
 
+    interface Battle {
+        int TYPE = 1200;
+        int RESP_GAME_INIT = 2;
+        int REQ_GAME_INIT_DONE = 3;
+        int REQ_MOVE_CHESS = 5;
+        int RESP_MOVE_CHESS = 6;
+        int RESP_CURRENT_GO_INFO = 8;
+    }
 }

@@ -30,8 +30,12 @@ public class BattleManager implements BattleListener {
     @Autowired
     private TimerCenter timerCenter;
 
+    public int getUid() {
+        return uidCreator.incrementAndGet();
+    }
+
     private BattleController create(Battle battle, Set<MatchInfo> matchInfos) {
-        BattleController battleController = new BattleController(uidCreator.incrementAndGet(),
+        BattleController battleController = new BattleController(getUid(),
                 battle, matchInfos).timerCenter(timerCenter).battleListener(this);
         battles.put(battleController.uid, battleController);
         return battleController;

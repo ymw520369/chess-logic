@@ -1,6 +1,7 @@
 package org.alan.chess.logic.battle;
 
 import org.alan.chess.logic.battle.sprite.SpriteController;
+import org.alan.chess.logic.constant.MessageConst;
 import org.alan.chess.logic.sample.battle.CardSprite;
 import org.alan.mars.protostuff.ProtobufMessage;
 import org.alan.mars.protostuff.RequestMessage;
@@ -19,22 +20,13 @@ import java.util.List;
  */
 public interface BattleMessage {
 
-    @RequestMessage
     @ProtobufMessage
     class MoveChess {
         public BattlePoint fromPoint;
         public BattlePoint toPoint;
     }
 
-    @ResponseMessage(messageType = 1200, cmd = 2)
-    @ProtobufMessage
-    class RespMoveChess {
-        public long roleUid;
-        public MoveChess moveChess;
-    }
-
-    @ResponseMessage(messageType = 1200, cmd = 4)
-    @ProtobufMessage
+    @ProtobufMessage(resp = true,messageType = MessageConst.Battle.TYPE, cmd = MessageConst.Battle.RESP_GAME_INIT)
     class RespGameInit {
         public int currentTeamId;
         public int mapId;
@@ -43,8 +35,15 @@ public interface BattleMessage {
         public List<TeamInfo> teamInfos;
     }
 
-    @ResponseMessage(messageType = 1200, cmd = 6)
-    @ProtobufMessage
+    @ProtobufMessage(resp = true,messageType = MessageConst.Battle.TYPE, cmd = MessageConst.Battle.RESP_MOVE_CHESS)
+    class RespMoveChess {
+        public long roleUid;
+        public MoveChess moveChess;
+    }
+
+
+
+    @ProtobufMessage(resp = true,messageType = MessageConst.Battle.TYPE, cmd = MessageConst.Battle.RESP_CURRENT_GO_INFO)
     class RespCurrentGoInfo {
         public int countdownSecond;
         public int roundNum;

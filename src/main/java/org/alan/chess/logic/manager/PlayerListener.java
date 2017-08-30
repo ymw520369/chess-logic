@@ -8,12 +8,15 @@ package org.alan.chess.logic.manager;
 import org.alan.chess.logic.controller.PlayerController;
 
 /**
+ *
+ *
+ *
  * Created on 2017/3/8.
  *
  * @author Alan
  * @since 1.0
  */
-public interface PlayerExitListener {
+public interface PlayerListener {
 
     void playerExit(PlayerController playerController);
 

@@ -6,13 +6,13 @@
 package org.alan.chess.logic.room;
 
 import org.alan.chess.logic.controller.PlayerController;
-import org.alan.chess.logic.manager.PlayerExitListener;
-import org.alan.chess.logic.sample.room.Room;
+import org.alan.chess.logic.manager.PlayerListener;
+import org.alan.chess.logic.match.MatchManager;
+import org.alan.chess.logic.sample.scene.Room;
 import org.alan.chess.logic.scene.SceneManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,14 +22,28 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.0
  */
 @Component
-public class RoomManager extends SceneManager implements PlayerExitListener {
+public class RoomManager extends SceneManager implements PlayerListener {
 
     private AtomicInteger uidCreator = new AtomicInteger();
-    private Room room = new Room();
 
-    public RoomController create(int roomType, PlayerController playerController) {
-//        Room room = Room.factory.getSample(sid);
-        RoomController roomController = new RoomController(room, uidCreator.incrementAndGet(), playerController);
+    @Autowired
+    private MatchManager matchManager;
+
+    public int getUid() {
+        return uidCreator.incrementAndGet();
+    }
+
+    public RoomController create(int roomSid, PlayerController playerController) {
+        Room room = Room.factory.getSample(roomSid);
+        RoomController roomController = new RoomController(room, getUid(), playerController, matchManager);
+        addSceneController(roomController);
+        return roomController;
+    }
+
+    public RoomController create(int roomSid, PlayerController playerController, boolean isQuickMatch) {
+        Room room = Room.factory.getSample(roomSid);
+        RoomController roomController = new RoomController(room, getUid(), playerController, matchManager);
+        roomController.isQuickRoom = isQuickMatch;
         addSceneController(roomController);
         return roomController;
     }

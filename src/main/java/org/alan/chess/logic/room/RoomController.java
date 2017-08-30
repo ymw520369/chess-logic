@@ -7,7 +7,9 @@ package org.alan.chess.logic.room;
 
 import org.alan.chess.logic.constant.GameResultEnum;
 import org.alan.chess.logic.controller.PlayerController;
-import org.alan.chess.logic.sample.room.Room;
+import org.alan.chess.logic.match.MatchInfo;
+import org.alan.chess.logic.match.MatchManager;
+import org.alan.chess.logic.sample.scene.Room;
 import org.alan.chess.logic.scene.SceneController;
 
 /**
@@ -20,22 +22,35 @@ public class RoomController extends SceneController<Room> {
     public int ownerSit;
     public RoomSit[] roomSits;
     public int roomStatus;
+    //是否是快速匹配房间
+    public boolean isQuickRoom;
 
-    RoomController(Room room, int uid, PlayerController playerController) {
+    public MatchManager matchManager;
+
+    RoomController(Room room, int uid, PlayerController playerController, MatchManager matchManager) {
         super(uid, room);
-        roomSits = new RoomSit[room.getNum()];
-        roomSits[0] = new RoomSit(0, playerController);
-        for (int i = 1; i < roomSits.length; i++) {
+        roomSits = new RoomSit[room.maxNum];
+        for (int i = 0; i < roomSits.length; i++) {
             roomSits[i] = new RoomSit(i);
         }
         ownerSit = 0;
+        this.matchManager = matchManager;
+        enter(playerController);
     }
 
-    public RoomSit joinRoom(PlayerController playerController) {
-        return sit(playerController);
+    @Override
+    public GameResultEnum enter(PlayerController playerController) {
+        super.enter(playerController);
+        RoomSit roomSit = sit(playerController);
+        if (roomSit != null) {
+            return GameResultEnum.SUCCESS;
+        }
+        return GameResultEnum.FAILURE;
     }
 
-    public GameResultEnum quitRoom(PlayerController playerController) {
+    @Override
+    public GameResultEnum exit(PlayerController playerController) {
+        super.exit(playerController);
         RoomSit roomSit = findSit(playerController);
         if (roomSit != null) {
             roomSit.playerController = null;
@@ -58,19 +73,6 @@ public class RoomController extends SceneController<Room> {
 
     public RoomSit[] getRoomSits() {
         return roomSits;
-    }
-
-    public void broadcast(Object msg) {
-        for (RoomSit roomSit : roomSits) {
-            if (roomSit.playerController != null) {
-                roomSit.playerController.sendToClient(msg);
-            }
-        }
-    }
-
-    private boolean destroy() {
-
-        return true;
     }
 
     private RoomSit findFirstSit() {
@@ -99,5 +101,29 @@ public class RoomController extends SceneController<Room> {
             }
         }
         return null;
+    }
+
+    public GameResultEnum beginMatch(PlayerController playerController) {
+        if (isOwner(playerController) && roomStatus == RoomStatus.WAIT) {
+            MatchInfo matchInfo = matchManager.addMatch(this);
+            roomStatus = RoomStatus.MATCH;
+            broadcast(new RoomMessage.RespBeginMatch(matchInfo.beginTime));
+            return GameResultEnum.SUCCESS;
+        }
+        return GameResultEnum.ILLEGAL;
+    }
+
+    public GameResultEnum cancelMatch(PlayerController playerController) {
+        if (isOwner(playerController) && roomStatus == RoomStatus.MATCH) {
+            matchManager.cancelMatch(this);
+            roomStatus = RoomStatus.WAIT;
+            broadcast(new RoomMessage.RespCancelMatch(GameResultEnum.SUCCESS));
+            if (isQuickRoom) {
+                exit(playerController);
+                destroy();
+            }
+            return GameResultEnum.SUCCESS;
+        }
+        return GameResultEnum.ILLEGAL;
     }
 }
